@@ -15,6 +15,13 @@ https://github.com/zanfranceschi/rinha-de-backend-2023-q3?s=08
 Projeto backend feito em Quarkus 3.3.1 seguindo as regras:
 https://github.com/zanfranceschi/rinha-de-backend-2023-q3/blob/main/INSTRUCOES.md
 
+## Atenção!!!
+Antes do build criar arquivo .env com as variáveis: 
+* DATABASE_USERNAME= 
+* DATABASE_PASSWORD= 
+* DATABASE_URL= 
+* SERVER_PORT=
+
 
 ## 💻 Getting started
 

@@ -4,7 +4,7 @@ services:
   api1:
     build:
       context: .
-      dockerfile: src/main/docker/Dockerfile.native
+      dockerfile: src/main/docker/Dockerfile.jvm
     hostname: api1
     environment:
       - SERVER_PORT=8080
@@ -36,7 +36,7 @@ services:
   api2:
     build:
       context: .
-      dockerfile: src/main/docker/Dockerfile.native
+      dockerfile: src/main/docker/Dockerfile.jvm
     hostname: api2
     environment:
       - SERVER_PORT=8090

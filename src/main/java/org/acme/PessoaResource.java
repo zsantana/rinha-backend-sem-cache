@@ -50,7 +50,6 @@ public class PessoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> create(Pessoa pessoa) {
 
-        try {
 
             String apelido = pessoa.getApelido();
             String nome = pessoa.getNome();
@@ -81,10 +80,6 @@ public class PessoaResource {
                             }
                         });
                     
-        } catch (Exception e) {
-            logger.error("### ERRO: {}", e.getMessage());
-            return Uni.createFrom().item(Response.status(Status.INTERNAL_SERVER_ERROR).build());
-        }                    
     }
 
     
@@ -101,8 +96,7 @@ public class PessoaResource {
                         .onItem().ifNull().continueWith(Response.status(Status.NOT_FOUND)::build);
 
         } catch (Exception e) {
-            logger.error("### ERRO: {}", e.getMessage());
-            return Uni.createFrom().item(Response.status(Status.INTERNAL_SERVER_ERROR).build());
+            throw new CustomException(e);
         }
         
     }
