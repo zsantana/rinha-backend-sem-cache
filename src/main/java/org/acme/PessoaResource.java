@@ -2,6 +2,8 @@ package org.acme;
 
 import static java.util.Collections.emptyList;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +44,7 @@ public class PessoaResource {
         return Pessoa.<Pessoa>find("busca like '%' || ?1 || '%'", termo).page(0, 50).list()
                     .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
                     .onItem().ifNull().continueWith(Response.status(Status.NOT_FOUND)::build);
-       
+
     }
 
     @POST
@@ -55,8 +57,8 @@ public class PessoaResource {
             String nome = pessoa.getNome();
 
             if (apelido == null || apelido.isBlank() || apelido.length() > 32
-                    || nome == null || nome.isBlank() || nome.length() > 100 
-                    || invalidStack(pessoa.getStack())
+                    || nome == null || nome.isBlank() || nome.length() > 100
+                    || invalidStack(pessoa.getStack()) || invalidNascimento(pessoa.getNascimento())
                     ) {
                 //logger.info("### Apelido fora do padrao permitido");
                 return Uni.createFrom().item(Response.status(Status.BAD_REQUEST).build());
@@ -79,10 +81,10 @@ public class PessoaResource {
                                         );
                             }
                         });
-                    
+
     }
 
-    
+
     @GET
     @Path("/pessoas/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -90,7 +92,7 @@ public class PessoaResource {
     public Uni<Response> get(@PathParam("id") String id) {
 
         try {
-        
+
             return Pessoa.<Pessoa>findById(UUID.fromString(id))
                         .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
                         .onItem().ifNull().continueWith(Response.status(Status.NOT_FOUND)::build);
@@ -98,10 +100,10 @@ public class PessoaResource {
         } catch (Exception e) {
             throw new CustomException(e);
         }
-        
+
     }
 
-   
+
     @GET
     @Path("/contagem-pessoas")
     @WithSession
@@ -131,6 +133,19 @@ public class PessoaResource {
         }
 
         return false;
+    }
+
+    private boolean invalidNascimento(String nascimento) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+
+        try {
+            sdf.parse(nascimento);
+            return false;
+        } catch (ParseException e) {
+            // swallow error
+            return true;
+        }
     }
 
 }
